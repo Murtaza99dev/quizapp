@@ -1,0 +1,140 @@
+BOOOOOOBBOOOOOq\
+OOOO"use strict";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+
+
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]
+
+  }
+}
+
+
+const Quiz = () => {
+  const [questions, setQuestions] = useState();
+  const [ques, setQues] = useState(0);
+  const [options, setOption] = useState();
+  const getQuiz = async () => {
+    const url =
+      "https://opentdb.com/api.php?amount=10&category=18&difficulty=medium&type=multiple&encode=url3986";
+    const res = await fetch(url);
+    const data = await res.json();
+    setQuestions(data.results);
+    setOption(generateOptionAndShuffle(data.results[0]))
+  };
+
+
+  useEffect(() => {
+    getQuiz();
+  }, []);
+
+  const generateOptionAndShuffle = (_questions) => {
+    const options = [..._questions.incorrect_answers]
+    options.push(..._questions.correct_answer)
+    shuffleArray(options)
+
+    return options
+  }
+
+  const handleSelectedOption = (_option) => {
+    console.log(_option === questions[ques].correct_answer)
+  }
+
+  return (
+    <View
+      style={{
+        paddingTop: 40,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        height: "100%",
+      }}
+    >
+      {questions && (
+        <View style={{ height: "100%" }}>
+          <View style={{ marginVertical: 16 }}>
+            <Text style={{ fontSize: 30, fontWeight: "600" }}>
+              Q. {decodeURIComponent(questions[ques].question)}
+            </Text>
+          </View>
+
+          <View style={{ marginVertical: 16, flex: 1, gap: 15 }}>
+            <TouchableOpacity
+              onPress={() => { }}
+
+              style={{
+                backgroundColor: "magenta",
+                paddingVertical: 10,
+                borderRadius: 15,
+              }}
+            >
+              <Text
+                style={{ textAlign: "center", color: "white", fontSize: 20 }}
+              >
+                {decodeURIComponent(options[0])}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "magenta",
+                paddingVertical: 10,
+                borderRadius: 15,
+              }}
+            >
+              <Text
+                style={{ textAlign: "center", color: "white", fontSize: 20 }}
+              >
+                {decodeURIComponent(options[1])}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "magenta",
+                paddingVertical: 10,
+                borderRadius: 15,
+              }}
+            >
+              <Text
+                style={{ textAlign: "center", color: "white", fontSize: 20 }}
+              >
+                {decodeURIComponent(options[2])}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "magenta",
+                paddingVertical: 10,
+                borderRadius: 15,
+              }}
+            >
+              <Text
+                style={{ textAlign: "center", color: "white", fontSize: 20 }}
+              >
+                {decodeURIComponent(options[3])}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View>
+            <TouchableOpacity>
+              <Button title="Next"></Button>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default Quiz;
+
+const styles = StyleSheet.create({});
